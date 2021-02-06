@@ -27,9 +27,16 @@ fun NotificationManager.sendNotification(project: Project, status: String, appli
     )
         .setSmallIcon(R.drawable.ic_baseline_cloud_download_24)
         .setContentTitle(applicationContext.getString(R.string.notification_title))
-        .setContentIntent(contentPendingIntent)
         .setContentText(messageBody)
-        .setAutoCancel(true)
+        .addAction(
+            R.drawable.ic_baseline_cloud_download_24,
+            applicationContext.getString(R.string.notification_button),
+            contentPendingIntent
+        )
 
     notify(NOTIFICATION_ID, builder.build())
+}
+
+fun NotificationManager.cancelNotification() {
+    cancel(NOTIFICATION_ID)
 }
