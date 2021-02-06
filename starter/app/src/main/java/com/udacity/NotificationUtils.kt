@@ -33,7 +33,3 @@ fun NotificationManager.sendNotification(project: Project, status: String, appli
 
     notify(NOTIFICATION_ID, builder.build())
 }
-
-fun NotificationManager.cancelNotifications() {
-    cancelAll()
-}
