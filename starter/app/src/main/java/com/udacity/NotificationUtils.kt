@@ -1,12 +1,25 @@
 package com.udacity
 
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import androidx.core.app.NotificationCompat
 
 private val NOTIFICATION_ID = 0
 
-fun NotificationManager.sendNotification(projectName: String, applicationContext: Context) {
+fun NotificationManager.sendNotification(projectName: String, status: String, applicationContext: Context) {
+
+    val contentIntent = Intent(applicationContext, DetailActivity::class.java)
+    contentIntent.putExtra("fileName", projectName) // FIXME get the long name
+    contentIntent.putExtra("status", status)
+    val contentPendingIntent = PendingIntent.getActivity(
+        applicationContext,
+        NOTIFICATION_ID,
+        contentIntent,
+        PendingIntent.FLAG_UPDATE_CURRENT
+    )
+
     val messageBody = String.format(applicationContext.getString(R.string.notification_description), projectName)
     val builder = NotificationCompat.Builder(
         applicationContext,
@@ -14,7 +27,9 @@ fun NotificationManager.sendNotification(projectName: String, applicationContext
     )
         .setSmallIcon(R.drawable.ic_baseline_cloud_download_24)
         .setContentTitle(applicationContext.getString(R.string.notification_title))
+        .setContentIntent(contentPendingIntent)
         .setContentText(messageBody)
+        .setAutoCancel(true)
 
     notify(NOTIFICATION_ID, builder.build())
 }

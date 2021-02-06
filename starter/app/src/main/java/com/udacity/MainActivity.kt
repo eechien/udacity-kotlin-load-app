@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.udacity.databinding.ContentMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -58,20 +59,34 @@ class MainActivity : AppCompatActivity() {
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            val projectDownload: String
-            projectDownload = when (id) {
-                glideDownloadID -> application.getString(R.string.glide_short_name)
-                projectDownloadID -> application.getString(R.string.project_short_name)
-                else -> application.getString(R.string.retrofit_short_name)
-            }
-            context?.let {
-                notificationManager.sendNotification(
-                    projectDownload,
-                    it
+            val id = intent!!.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+            val query = DownloadManager.Query()
+                .setFilterById(id)
+            val cursor = downloadManager.query(query)
+            var downloadStatus = "Downloading"
+            if (cursor.moveToFirst()) {
+                val status = cursor.getInt(
+                    cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
                 )
+                when (status) {
+                    DownloadManager.STATUS_SUCCESSFUL -> downloadStatus = "Completed"
+                    DownloadManager.STATUS_FAILED -> downloadStatus = "Failed"
+                }
+                val projectDownload: String
+                projectDownload = when (id) {
+                    glideDownloadID -> application.getString(R.string.glide_short_name)
+                    projectDownloadID -> application.getString(R.string.project_short_name)
+                    else -> application.getString(R.string.retrofit_short_name)
+                }
+                context?.let {
+                    notificationManager.sendNotification(
+                        projectDownload,
+                        downloadStatus,
+                        it
+                    )
+                }
             }
-
         }
     }
 
@@ -87,9 +102,15 @@ class MainActivity : AppCompatActivity() {
 
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         when(projectUrl) {
-            application.getString(R.string.glide_url) -> glideDownloadID = downloadManager.enqueue(request)
-            application.getString(R.string.project_url) -> projectDownloadID = downloadManager.enqueue(request)
-            else -> retrofitDownloadID = downloadManager.enqueue(request)
+            application.getString(R.string.glide_url) -> {
+                glideDownloadID = downloadManager.enqueue(request)
+            }
+            application.getString(R.string.project_url) -> {
+                projectDownloadID = downloadManager.enqueue(request)
+            }
+            else -> {
+                retrofitDownloadID = downloadManager.enqueue(request)
+            }
         }
     }
 
