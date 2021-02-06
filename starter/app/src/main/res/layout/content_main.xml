@@ -18,7 +18,9 @@
             android:src="@drawable/ic_baseline_cloud_download_24"
             app:layout_constraintBottom_toTopOf="@+id/radio_choices"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="0dp" />
+            tools:layout_editor_absoluteX="0dp"
+            android:background="@color/colorPrimaryDark"
+            android:tint="@color/purple"/>
 
         <RadioGroup
             android:id="@+id/radio_choices"
