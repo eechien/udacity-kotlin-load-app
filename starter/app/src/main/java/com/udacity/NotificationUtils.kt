@@ -8,10 +8,10 @@ import androidx.core.app.NotificationCompat
 
 private val NOTIFICATION_ID = 0
 
-fun NotificationManager.sendNotification(projectName: String, status: String, applicationContext: Context) {
+fun NotificationManager.sendNotification(project: Project, status: String, applicationContext: Context) {
 
     val contentIntent = Intent(applicationContext, DetailActivity::class.java)
-    contentIntent.putExtra("fileName", projectName) // FIXME get the long name
+    contentIntent.putExtra("fileName", String.format("%s - %s", project.name, project.description))
     contentIntent.putExtra("status", status)
     val contentPendingIntent = PendingIntent.getActivity(
         applicationContext,
@@ -20,7 +20,7 @@ fun NotificationManager.sendNotification(projectName: String, status: String, ap
         PendingIntent.FLAG_UPDATE_CURRENT
     )
 
-    val messageBody = String.format(applicationContext.getString(R.string.notification_description), projectName)
+    val messageBody = String.format(applicationContext.getString(R.string.notification_description), project.name)
     val builder = NotificationCompat.Builder(
         applicationContext,
         applicationContext.getString(R.string.notification_channel_id)

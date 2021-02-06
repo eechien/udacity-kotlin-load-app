@@ -50,9 +50,9 @@ class MainActivity : AppCompatActivity() {
 
         custom_button.setOnClickListener {
             download(when(binding.radioChoices.checkedRadioButtonId) {
-                R.id.glide_radio -> getString(R.string.glide_url)
-                R.id.project_radio -> getString(R.string.project_url)
-                else -> getString(R.string.retrofit_url)
+                R.id.glide_radio -> Project.getGlide()
+                R.id.project_radio -> Project.getLoadApp()
+                else -> Project.getRetrofit()
             })
         }
     }
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             val query = DownloadManager.Query()
                 .setFilterById(id)
             val cursor = downloadManager.query(query)
-            var downloadStatus = "Downloading"
+            var downloadStatus = ""
             if (cursor.moveToFirst()) {
                 val status = cursor.getInt(
                     cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
@@ -73,15 +73,14 @@ class MainActivity : AppCompatActivity() {
                     DownloadManager.STATUS_SUCCESSFUL -> downloadStatus = "Completed"
                     DownloadManager.STATUS_FAILED -> downloadStatus = "Failed"
                 }
-                val projectDownload: String
-                projectDownload = when (id) {
-                    glideDownloadID -> application.getString(R.string.glide_short_name)
-                    projectDownloadID -> application.getString(R.string.project_short_name)
-                    else -> application.getString(R.string.retrofit_short_name)
+                val project = when (id) {
+                    glideDownloadID -> Project.getGlide()
+                    projectDownloadID -> Project.getLoadApp()
+                    else -> Project.getRetrofit()
                 }
                 context?.let {
                     notificationManager.sendNotification(
-                        projectDownload,
+                        project,
                         downloadStatus,
                         it
                     )
@@ -90,8 +89,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun download(projectUrl: String) {
-        val downloadUrl = String.format("%s/archive/master.zip", projectUrl)
+    private fun download(project: Project) {
+        val downloadUrl = String.format("%s/archive/master.zip", project.url)
         val request =
             DownloadManager.Request(Uri.parse(downloadUrl))
                 .setTitle(getString(R.string.app_name))
@@ -101,7 +100,7 @@ class MainActivity : AppCompatActivity() {
                 .setAllowedOverRoaming(true)
 
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        when(projectUrl) {
+        when(project.url) { // FIXME how to do less duplication?
             application.getString(R.string.glide_url) -> {
                 glideDownloadID = downloadManager.enqueue(request)
             }
