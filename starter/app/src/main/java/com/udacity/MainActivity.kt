@@ -70,8 +70,8 @@ class MainActivity : AppCompatActivity() {
                     cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
                 )
                 when (status) {
-                    DownloadManager.STATUS_SUCCESSFUL -> downloadStatus = "Completed"
-                    DownloadManager.STATUS_FAILED -> downloadStatus = "Failed"
+                    DownloadManager.STATUS_SUCCESSFUL -> downloadStatus = "Success"
+                    DownloadManager.STATUS_FAILED -> downloadStatus = "Fail"
                 }
                 val project = when (id) {
                     glideDownloadID -> Project.getGlide()
