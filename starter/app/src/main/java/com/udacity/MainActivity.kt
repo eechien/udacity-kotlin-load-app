@@ -12,6 +12,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -49,11 +50,12 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         custom_button.setOnClickListener {
-            download(when(binding.radioChoices.checkedRadioButtonId) {
-                R.id.glide_radio -> Project.getGlide()
-                R.id.project_radio -> Project.getLoadApp()
-                else -> Project.getRetrofit()
-            })
+            when(binding.radioChoices.checkedRadioButtonId) {
+                R.id.glide_radio -> download(Project.getGlide())
+                R.id.project_radio -> download(Project.getLoadApp())
+                R.id.retrofit_radio -> download(Project.getRetrofit())
+                else -> Toast.makeText(applicationContext, "Please select the file to download", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
