@@ -42,12 +42,15 @@
         <Constraint android:id="@+id/radio_choices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/fab_margin"
+            android:layout_marginEnd="@dimen/fab_margin"
             app:layout_constraintBottom_toTopOf="@+id/custom_button"
             app:layout_constraintTop_toBottomOf="@+id/download_icon" />
 
         <Constraint android:id="@+id/custom_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_margin="@dimen/fab_margin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
