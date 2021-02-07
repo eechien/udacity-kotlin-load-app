@@ -31,6 +31,7 @@ class DetailActivity : AppCompatActivity() {
         binding.fileName = intent.getStringExtra("fileName")
         binding.status = intent.getStringExtra("status")
         binding.leaveDetailPageButton.setOnClickListener {
+            binding.detailActivityContent.transitionToEnd()
             val contentIntent = Intent(applicationContext, MainActivity::class.java)
             navigateUpTo(contentIntent)
         }
