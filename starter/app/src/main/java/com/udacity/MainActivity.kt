@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         custom_button.setOnClickListener {
+            custom_button.buttonState = ButtonState.Clicked
             when(binding.radioChoices.checkedRadioButtonId) {
                 R.id.glide_radio -> download(Project.getGlide())
                 R.id.project_radio -> download(Project.getLoadApp())
@@ -80,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                     projectDownloadID -> Project.getLoadApp()
                     else -> Project.getRetrofit()
                 }
+                custom_button.buttonState = ButtonState.Completed
                 context?.let {
                     notificationManager.sendNotification(
                         project,
@@ -113,6 +115,7 @@ class MainActivity : AppCompatActivity() {
                 retrofitDownloadID = downloadManager.enqueue(request)
             }
         }
+        custom_button.buttonState = ButtonState.Loading
     }
 
     fun createChannel(channelId: String, channelName: String) {
