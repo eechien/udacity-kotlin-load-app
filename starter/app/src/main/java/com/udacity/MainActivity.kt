@@ -30,8 +30,6 @@ class MainActivity : AppCompatActivity() {
     private var retrofitDownloadID: Long = 0
 
     private lateinit var notificationManager: NotificationManager
-    private lateinit var pendingIntent: PendingIntent
-    private lateinit var action: NotificationCompat.Action
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,11 +102,11 @@ class MainActivity : AppCompatActivity() {
                 .setAllowedOverRoaming(true)
 
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        when(project.url) { // FIXME how to do less duplication?
-            application.getString(R.string.glide_url) -> {
+        when(project.url) {
+            Project.getGlide().url -> {
                 glideDownloadID = downloadManager.enqueue(request)
             }
-            application.getString(R.string.project_url) -> {
+            Project.getLoadApp().url -> {
                 projectDownloadID = downloadManager.enqueue(request)
             }
             else -> {
@@ -133,6 +131,5 @@ class MainActivity : AppCompatActivity() {
 
             notificationManager.createNotificationChannel(notificationChannel)
         }
-
     }
 }
